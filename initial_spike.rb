@@ -124,51 +124,17 @@ class Board
     unmarked_keys.empty?
   end
 
-  def someone_won?
-    !!winning_marker
-  end
-
-  def count_human_marker(squares)
-    squares.collect(&:marker).count(TTTGame::HUMAN_MARKER)
-  end
-
-  def count_computer_marker(squares)
-    squares.collect(&:marker).count(TTTGame::COMPUTER_MARKER)
-  end
-
-  def count_marker
-    unique_markers = squares.map(&:marker).uniq!
-    
-  end
-
-  # returns winning marker or nil
   def winning_marker
     WINNING_LINES.each do |line|
       squares = @squares.values_at(*line)
-      if three_identical_markers?(squares)
-        return squares.first.marker
-      end
+      markers = squares.map(&:marker)
+      markers.uniq!
+
+      next if markers.include?(' ')
+      return markers.first if markers.size == 1
     end
     nil
   end
-
-  def three_identical_markers?(squares)
-    markers = squares.select(&:marked?).collect(&:marker)
-    return false if markers.size != 3
-    markers.min == markers.max
-  end
-
-  # def winning_marker
-  #   WINNING_LINES.each do |line|
-  #     squares = @squares.values_at(*line)
-  #     markers = squares.map(&:marker)
-  #     markers.uniq!
-
-  #     next if markers.include?(' ')
-  #     return markers.first if markers.size == 1
-  #   end
-  #   nil
-  # end
 
   def reset
     1.upto(9) { |key| @squares[key] = Square.new }
