@@ -263,6 +263,7 @@ class TTTGame
 
   def reset
     clear
+    self.current_player = human
     board.reset
   end
 
