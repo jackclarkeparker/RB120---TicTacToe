@@ -83,6 +83,7 @@ Player
 # game.play
 
 require 'pry'
+require 'pry-byebug'
 
 class Board
   WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
@@ -179,11 +180,21 @@ class TTTGame
   COMPUTER_MARKER = 'O'
 
   attr_reader :board, :human, :computer
+  attr_accessor :current_player
 
   def initialize
     @board = Board.new
     @human = Player.new(HUMAN_MARKER)
     @computer = Player.new(COMPUTER_MARKER)
+    @current_player = human
+  end
+
+  def current_player_moves
+    case current_player
+    when human    then human_moves
+    when computer then computer_moves
+    end
+    self.current_player = (current_player == human ? computer : human)
   end
 
   def human_moves
@@ -201,6 +212,10 @@ class TTTGame
   def computer_moves
     square = board.unmarked_keys.sample
     board[square] = computer.marker
+  end
+
+  def human_turn?
+    current_player == human
   end
 
   def display_result
@@ -233,13 +248,9 @@ class TTTGame
       display_board
 
       loop do
-        human_moves
+        current_player_moves
         break if board.someone_won? || board.full?
-
-        computer_moves
-        break if board.someone_won? || board.full?
-
-        clear_screen_and_display_board
+        clear_screen_and_display_board if human_turn?
       end
       display_result
       break unless play_again?
