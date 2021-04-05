@@ -124,6 +124,10 @@ class Board
     unmarked_keys.empty?
   end
 
+  def someone_won?
+    !!winning_marker
+  end
+
   def winning_marker
     WINNING_LINES.each do |line|
       squares = @squares.values_at(*line)
