@@ -189,6 +189,41 @@ class TTTGame
     @current_player = human
   end
 
+  def play
+    clear
+    display_welcome_message
+
+    loop do
+      display_board
+
+      loop do
+        current_player_moves
+        break if board.someone_won? || board.full?
+        clear_screen_and_display_board if human_turn?
+      end
+      display_result
+      break unless play_again?
+      self.reset
+      display_play_again_message
+    end
+
+    display_goodbye_message
+  end
+
+  private
+
+  def display_board
+    puts "You're a #{human.marker}. Computer is a #{computer.marker}."
+    puts ""
+    board.draw
+    puts ""
+  end
+
+  def clear_screen_and_display_board
+    clear
+    display_board
+  end
+
   def current_player_moves
     case current_player
     when human    then human_moves
@@ -240,27 +275,6 @@ class TTTGame
     answer.start_with?('y')
   end
 
-  def play
-    clear
-    display_welcome_message
-
-    loop do
-      display_board
-
-      loop do
-        current_player_moves
-        break if board.someone_won? || board.full?
-        clear_screen_and_display_board if human_turn?
-      end
-      display_result
-      break unless play_again?
-      self.reset
-      display_play_again_message
-    end
-
-    display_goodbye_message
-  end
-
   def reset
     clear
     self.current_player = human
@@ -269,18 +283,6 @@ class TTTGame
 
   def display_play_again_message
     puts "Let's play again!"
-    puts ""
-  end
-
-  def clear_screen_and_display_board
-    clear
-    display_board
-  end
-
-  def display_board
-    puts "You're a #{human.marker}. Computer is a #{computer.marker}."
-    puts ""
-    board.draw
     puts ""
   end
 
@@ -299,4 +301,6 @@ class TTTGame
 end
 
 game = TTTGame.new
-game.play
+board = Board.initialize
+p board
+# game.play
