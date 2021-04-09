@@ -107,12 +107,8 @@ class Board
     puts "     |     |"
   end
 
-  def get_square_at(key)
-    @squares[key]
-  end
-
-  def []=(key, marker)
-    @squares[key].marker = marker
+  def []=(key, m)
+    @squares[key].marker = m
   end
 
   def unmarked_keys
