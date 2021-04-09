@@ -180,6 +180,8 @@ class TTTGame
 
 
   # Option to swap @computer/@human for @computer_marker/@human_marker
+  # Do we even need instance variables to reference these? Maybe we can just
+  # use the constants in the respective #***_moves methods
   def initialize
     @board = Board.new
     @human = Player.new(HUMAN_MARKER)
@@ -274,7 +276,8 @@ class TTTGame
       puts "Sorry, must be y or n"
     end
 
-    answer.start_with?('y')
+    return true  if answer.start_with?('y')
+    return false if answer.start_with?('n')
   end
 
   def reset
