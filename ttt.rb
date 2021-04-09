@@ -174,9 +174,12 @@ class TTTGame
   COMPUTER_MARKER = 'O'
   FIRST_TO_PLAY = HUMAN_MARKER
 
+  # Is it okay that all of these getters/setters are public?
   attr_reader :board, :human, :computer
   attr_accessor :current_player
 
+
+  # Option to swap @computer/@human for @computer_marker/@human_marker
   def initialize
     @board = Board.new
     @human = Player.new(HUMAN_MARKER)
@@ -233,14 +236,14 @@ class TTTGame
 
   def human_moves
     puts "Choose an empty square (#{board.unmarked_keys.join(", ")})"
-    square = nil
+    choice = nil
     loop do
-      square = gets.chomp.to_i
-      break if (board.unmarked_keys).include?(square)
+      choice = gets.chomp.to_i
+      break if (board.unmarked_keys).include?(choice)
       puts "Sorry, incorrect input."
     end
 
-    board[square] = human.marker
+    board[choice] = human.marker
   end
 
   def computer_moves
