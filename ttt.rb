@@ -247,8 +247,8 @@ class TTTGame
   end
 
   def computer_moves
-    square = board.unmarked_keys.sample
-    board[square] = computer.marker
+    choice = board.unmarked_keys.sample
+    board[choice] = computer.marker
   end
 
   def human_turn?
