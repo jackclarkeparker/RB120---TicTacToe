@@ -82,7 +82,6 @@ Player
 # game = TTTGame.new
 # game.play
 
-
 class Board
   WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
                   [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # cols
@@ -93,6 +92,8 @@ class Board
     reset
   end
 
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def draw
     puts "     |     |"
     puts "  #{@squares[1]}  |  #{@squares[2]}  |  #{@squares[3]}"
@@ -106,6 +107,8 @@ class Board
     puts "  #{@squares[7]}  |  #{@squares[8]}  |  #{@squares[9]}"
     puts "     |     |"
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 
   def []=(key, m)
     @squares[key].marker = m
@@ -178,7 +181,6 @@ class TTTGame
   attr_reader :board, :human, :computer
   attr_accessor :current_player
 
-
   # Option to swap @computer/@human for @computer_marker/@human_marker
   # Do we even need instance variables to reference these? Maybe we can just
   # use the constants in the respective #***_moves methods
@@ -192,25 +194,31 @@ class TTTGame
   def play
     clear
     display_welcome_message
-
-    loop do
-      display_board
-
-      loop do
-        current_player_moves
-        break if board.someone_won? || board.full?
-        clear_screen_and_display_board if human_turn?
-      end
-      display_result
-      break unless play_again?
-      self.reset
-      display_play_again_message
-    end
-
+    main_game
     display_goodbye_message
   end
 
   private
+
+  def main_game
+    loop do
+      display_board
+
+      players_make_moves
+      display_result
+      break unless play_again?
+      reset
+      display_play_again_message
+    end
+  end
+
+  def players_make_moves
+    loop do
+      current_player_moves
+      break if board.someone_won? || board.full?
+      clear_screen_and_display_board if human_turn?
+    end
+  end
 
   def display_board
     puts "You're a #{human.marker}. Computer is a #{computer.marker}."
@@ -229,15 +237,15 @@ class TTTGame
     when HUMAN_MARKER    then human_moves
     when COMPUTER_MARKER then computer_moves
     end
-    if @current_marker == HUMAN_MARKER
-      @current_marker = COMPUTER_MARKER
-    else
-      @current_marker = HUMAN_MARKER
-    end
+    @current_marker = if @current_marker == HUMAN_MARKER
+                        COMPUTER_MARKER
+                      else
+                        HUMAN_MARKER
+                      end
   end
 
   def human_moves
-    puts "Choose an empty square (#{board.unmarked_keys.join(", ")})"
+    puts "Choose an empty square (#{board.unmarked_keys.join(', ')})"
     choice = nil
     loop do
       choice = gets.chomp.to_i
@@ -261,8 +269,8 @@ class TTTGame
     clear_screen_and_display_board
 
     case board.winning_marker
-    when HUMAN_MARKER    then puts "You won!"
-    when COMPUTER_MARKER then puts "Computer won!"
+    when HUMAN_MARKER    then puts 'You won!'
+    when COMPUTER_MARKER then puts 'Computer won!'
     else                      puts "It's a tie!"
     end
   end
@@ -270,10 +278,10 @@ class TTTGame
   def play_again?
     answer = nil
     loop do
-      puts "Would you like to play again? (y/n)"
+      puts 'Would you like to play again? (y/n)'
       answer = gets.chomp.downcase
       break if %w(yes y no n).include?(answer)
-      puts "Sorry, must be y or n"
+      puts 'Sorry, must be y or n'
     end
 
     return true  if answer.start_with?('y')
@@ -288,16 +296,16 @@ class TTTGame
 
   def display_play_again_message
     puts "Let's play again!"
-    puts ""
+    puts ''
   end
 
   def display_welcome_message
-    puts "Welcome to Tic Tac Toe!"
-    puts ""
+    puts 'Welcome to Tic Tac Toe!'
+    puts ''
   end
 
   def display_goodbye_message
-    puts "Thanks for playing Tic Tac Toe! Goodbye!"
+    puts 'Thanks for playing Tic Tac Toe! Goodbye!'
   end
 
   def clear
